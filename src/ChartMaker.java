@@ -1,8 +1,6 @@
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
-
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 
@@ -21,6 +19,9 @@ public class ChartMaker extends JPanel {
         originPoint = origin;
         this.xLength = xLength;
         this.yLength = yLength;
+
+        setPreferredSize(new Dimension(xLength +padding*2, yLength + padding*2));
+        setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
     }
 
     public void addPoint(Point point){
@@ -39,25 +40,31 @@ public class ChartMaker extends JPanel {
     public void paintComponent(Graphics g){
         super.paintComponent(g);
 
-        //draw borders
-        g.setColor(Color.GRAY);
-        g.drawLine(originPoint.x - padding, originPoint.y + padding, originPoint.x + xLength + padding, originPoint.y + padding);                       //down-base
-        g.drawLine(originPoint.x - padding, originPoint.y + padding, originPoint.x - padding, originPoint.y - yLength - padding);                       //left-wall
-        g.drawLine(originPoint.x + xLength + padding, originPoint.y + padding, originPoint.x + xLength + padding, originPoint.y - yLength - padding);   //right-wall
-        g.drawLine(originPoint.x - padding, originPoint.y - yLength - padding, originPoint.x + xLength + padding, originPoint.y - yLength - padding);   //top-base
+        Graphics2D g2d = (Graphics2D) g;
 
         //draw x axis
-        g.setColor(Color.RED);
-        g.drawLine(originPoint.x, originPoint.y, originPoint.x + xLength, originPoint.y);
+        g2d.setColor(Color.RED);
+        g2d.setStroke(new BasicStroke(3));
+        g2d.drawLine(originPoint.x, originPoint.y, originPoint.x + xLength, originPoint.y);
 
         //draw y axis
-        g.setColor(Color.BLUE);
-        g.drawLine(originPoint.x, originPoint.y, originPoint.x, originPoint.y - yLength);
+        g2d.setColor(Color.BLUE);
+        g2d.setStroke(new BasicStroke(3));
+        g2d.drawLine(originPoint.x, originPoint.y, originPoint.x, originPoint.y - yLength);
         
         //draw points
-        g.setColor(Color.BLACK);
-        for (Point point : points) {
-            g.drawOval(point.x-2, point.y-2, 4, 4);
+        g2d.setColor(Color.BLACK);
+        g2d.setStroke(new BasicStroke(2));
+        
+        for (int i = 0; i < points.size(); i++){
+            Point p = points.get(i);
+            g2d.drawOval(p.x - 2, p.y - 2, 4, 4);
+        }
+
+        for (int i = 1; i < points.size(); i++) {
+            Point a = points.get(i - 1);
+            Point b = points.get(i);
+            g2d.drawLine(a.x, a.y, b.x, b.y);
         }
     }
 }
