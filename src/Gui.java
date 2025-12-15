@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+
 
 public class Gui {
     public JPanel mainMenu(){
@@ -22,8 +21,19 @@ public class Gui {
 
         //panel dei dati
         JPanel dataPanel = labeledPanel("Insert data", new Component[] {
-                lif_name,
-                lif_age,
+            lif_name,
+            lif_age,
+        });
+
+        JButton button1 = new JButton("1");
+        JButton button2 = new JButton("2");
+        JButton button3 = new JButton("3");
+        
+
+        JPanel moodPanel = labeledPanel("Mood", new Component[] {
+            button1,
+            button2,
+            button3,
         });
 
         //panel principale
@@ -31,16 +41,37 @@ public class Gui {
                 dataPanel,
                 button,
                 outputLabel,
+                moodPanel,
         });
 
         return mainPanel;
     }
 
+    public JPanel chartMenu(){
+        ChartMaker chartMaker = new ChartMaker(new Point(100, 300), 200, 200);
+        chartMaker.addPoint(new Point(0, 0));
+        chartMaker.addPoint(new Point(3, 4));
+        chartMaker.addPoint(new Point(5, 7));
+        chartMaker.addPoint(new Point(10, 3));
+        chartMaker.addPoint(new Point(10, 10));
+        return chartMaker;
+    }
 
 
     private JPanel verticalPanel(Component[] components){
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        for (Component component : components) {
+            panel.add(component);
+        }
+
+        return panel;
+    }
+
+    private JPanel horizontalPanel(Component[] components){
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
 
         for (Component component : components) {
             panel.add(component);
