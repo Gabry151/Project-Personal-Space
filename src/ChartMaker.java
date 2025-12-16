@@ -31,12 +31,21 @@ public class ChartMaker extends JPanel {
         rebuildPoints();
     }
 
-    public void paintPoint(Point point){
+    private void paintPoint(Point point){
         pointsPos.add(getPos(point));
         repaint();
     }
 
-    public Point getPos(Point point){
+    private void rebuildPoints() {
+
+        pointsPos.clear();
+
+        for (Point point : points) {
+            paintPoint(point);
+        }
+    }
+
+    private Point getPos(Point point){
         int tempxLenght = defxLength;
         if (points.size() > defxLength){
             tempxLenght = points.size();
@@ -53,14 +62,6 @@ public class ChartMaker extends JPanel {
         );
     }
 
-    public void rebuildPoints(){
-
-        pointsPos.clear();
-
-        for (Point point : points) {
-            paintPoint(point);
-        }
-    }
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
@@ -86,10 +87,39 @@ public class ChartMaker extends JPanel {
             g2d.drawOval(p.x - 2, p.y - 2, 4, 4);
         }
 
+        //draw lines
+        g2d.setColor(Color.DARK_GRAY);
+        g2d.setStroke(new BasicStroke(1));
+
         for (int i = 1; i < pointsPos.size(); i++) {
             Point a = pointsPos.get(i - 1);
             Point b = pointsPos.get(i);
             g2d.drawLine(a.x, a.y, b.x, b.y);
+        }
+
+        //draw marker
+        g2d.setColor(Color.GRAY);
+        g2d.setStroke(new BasicStroke(1));
+        
+        if (pointsPos.size() < defxLength){
+            for (int i = 1; i < defxLength; i++) {
+                Point p = getPos(new Point(i%defxLength, 0));
+                g2d.drawLine(p.x, originPoint.y - 5, p.x, originPoint.y + 5);
+                g2d.drawString(Integer.toString(i), p.x - 3, originPoint.y + 17);
+            }
+        }
+        else{
+            for (int i = 1; i < pointsPos.size(); i++) {
+                Point p = pointsPos.get(i);
+                g2d.drawLine(p.x, originPoint.y - 5, p.x, originPoint.y + 5);
+                g2d.drawString(Integer.toString(i), p.x - 3, originPoint.y + 17);
+            }
+        }
+
+        for (int i = 1; i < defyLength; i++) {
+            Point p = getPos(new Point(0, i % defxLength));
+            g2d.drawLine(originPoint.x - 5, p.y, originPoint.x + 5, p.y);
+            g2d.drawString(Integer.toString(i), originPoint.x - 12, p.y + 5);
         }
     }
 }
