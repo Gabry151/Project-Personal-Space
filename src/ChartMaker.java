@@ -1,19 +1,21 @@
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 
 public class ChartMaker extends JPanel {
-    final int defxLength = 10;
-    final int defyLength = 10;
-
+    final int defxLength = 5;
+    final int defyLength = 5;
     final int padding = 25;
 
     Point originPoint = new Point(0, 0);
     int xLength = 200;
     int yLength = 200;
-    ArrayList<Point> points = new ArrayList<Point>();
+    List<Point> points = new ArrayList<>();
+    List<Point> pointsPos = new ArrayList<>();
 
     public ChartMaker(Point origin, int xLength, int yLength){
         originPoint = origin;
@@ -25,16 +27,39 @@ public class ChartMaker extends JPanel {
     }
 
     public void addPoint(Point point){
+        points.add(point);
+        rebuildPoints();
+    }
+
+    public void paintPoint(Point point){
+        pointsPos.add(getPos(point));
+        repaint();
+    }
+
+    public Point getPos(Point point){
+        int tempxLenght = defxLength;
+        if (points.size() > defxLength){
+            tempxLenght = points.size();
+        }
+
         Point temp = new Point(
-            (xLength * point.x) / defxLength,
+            (xLength * point.x) / tempxLenght,
             (yLength * point.y) / defyLength
         );
 
-        points.add(new Point(
+        return new Point(
             originPoint.x + temp.x,
             originPoint.y - temp.y
-        ));
-        repaint();
+        );
+    }
+
+    public void rebuildPoints(){
+
+        pointsPos.clear();
+
+        for (Point point : points) {
+            paintPoint(point);
+        }
     }
 
     public void paintComponent(Graphics g){
@@ -56,14 +81,14 @@ public class ChartMaker extends JPanel {
         g2d.setColor(Color.BLACK);
         g2d.setStroke(new BasicStroke(2));
         
-        for (int i = 0; i < points.size(); i++){
-            Point p = points.get(i);
+        for (int i = 0; i < pointsPos.size(); i++){
+            Point p = pointsPos.get(i);
             g2d.drawOval(p.x - 2, p.y - 2, 4, 4);
         }
 
-        for (int i = 1; i < points.size(); i++) {
-            Point a = points.get(i - 1);
-            Point b = points.get(i);
+        for (int i = 1; i < pointsPos.size(); i++) {
+            Point a = pointsPos.get(i - 1);
+            Point b = pointsPos.get(i);
             g2d.drawLine(a.x, a.y, b.x, b.y);
         }
     }
