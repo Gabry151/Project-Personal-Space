@@ -17,6 +17,9 @@ public class ChartMaker extends JPanel {
     List<Point> points = new ArrayList<>();
     List<Point> pointsPos = new ArrayList<>();
 
+    int highestX = defxLength;
+    int highestY = defxLength;
+
     public ChartMaker(Point origin, int xLength, int yLength){
         originPoint = origin;
         this.xLength = xLength;
@@ -24,6 +27,7 @@ public class ChartMaker extends JPanel {
 
         setPreferredSize(new Dimension(xLength +padding*2, yLength + padding*2));
         setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        setBackground(Color.WHITE);
     }
 
     public void addPoint(Point point){
@@ -51,6 +55,11 @@ public class ChartMaker extends JPanel {
             tempxLenght = points.size();
         }
 
+        // int tempyLenght = defyLength;
+        // if (points.size() > defyLength) {
+        //     tempyLenght = points.size();
+        // }
+
         Point temp = new Point(
             (xLength * point.x) / tempxLenght,
             (yLength * point.y) / defyLength
@@ -71,12 +80,21 @@ public class ChartMaker extends JPanel {
         //draw x axis
         g2d.setColor(Color.RED);
         g2d.setStroke(new BasicStroke(3));
-        g2d.drawLine(originPoint.x, originPoint.y, originPoint.x + xLength, originPoint.y);
+        Point endAxis = new Point(originPoint.x + xLength, originPoint.y - yLength);
+        g2d.drawLine(originPoint.x, originPoint.y, endAxis.x, originPoint.y);
+                //arrow
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawLine(endAxis.x - 3, originPoint.y + 3, endAxis.x +1, originPoint.y);
+        g2d.drawLine(endAxis.x - 3, originPoint.y - 3, endAxis.x +1, originPoint.y);
 
         //draw y axis
         g2d.setColor(Color.BLUE);
         g2d.setStroke(new BasicStroke(3));
-        g2d.drawLine(originPoint.x, originPoint.y, originPoint.x, originPoint.y - yLength);
+        g2d.drawLine(originPoint.x, originPoint.y, originPoint.x, endAxis.y);
+                // arrow
+        g2d.setStroke(new BasicStroke(2));
+        g2d.drawLine(originPoint.x - 3, endAxis.y + 3, originPoint.x, endAxis.y - 1);
+        g2d.drawLine(originPoint.x + 3, endAxis.y + 3, originPoint.x, endAxis.y - 1);
         
         //draw points
         g2d.setColor(Color.BLACK);
@@ -105,14 +123,14 @@ public class ChartMaker extends JPanel {
             for (int i = 1; i < defxLength; i++) {
                 Point p = getPos(new Point(i%defxLength, 0));
                 g2d.drawLine(p.x, originPoint.y - 5, p.x, originPoint.y + 5);
-                g2d.drawString(Integer.toString(i), p.x - 3, originPoint.y + 17);
+                //g2d.drawString(Integer.toString(i), p.x - 3, originPoint.y + 17);
             }
         }
         else{
             for (int i = 1; i < pointsPos.size(); i++) {
                 Point p = pointsPos.get(i);
                 g2d.drawLine(p.x, originPoint.y - 5, p.x, originPoint.y + 5);
-                g2d.drawString(Integer.toString(i), p.x - 3, originPoint.y + 17);
+                //g2d.drawString(Integer.toString(i), p.x - 3, originPoint.y + 17);
             }
         }
 
