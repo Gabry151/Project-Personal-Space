@@ -32,6 +32,7 @@ public class ChartMaker extends JPanel {
 
     public void addPoint(Point point){
         points.add(point);
+        getPos(point);  //reassign highest coordinates
         rebuildPoints();
     }
 
@@ -50,19 +51,17 @@ public class ChartMaker extends JPanel {
     }
 
     private Point getPos(Point point){
-        int tempxLenght = defxLength;
-        if (points.size() > defxLength){
-            tempxLenght = points.size();
+        if (point.x + 1 > highestX){
+            highestX = point.x +1;
         }
 
-        // int tempyLenght = defyLength;
-        // if (points.size() > defyLength) {
-        //     tempyLenght = points.size();
-        // }
+        if (point.y + 1 > highestY) {
+            highestY = point.y +1;
+        }
 
         Point temp = new Point(
-            (xLength * point.x) / tempxLenght,
-            (yLength * point.y) / defyLength
+            (xLength * point.x) / highestX,
+            (yLength * point.y) / highestY
         );
 
         return new Point(
@@ -119,23 +118,18 @@ public class ChartMaker extends JPanel {
         g2d.setColor(Color.GRAY);
         g2d.setStroke(new BasicStroke(1));
         
-        if (pointsPos.size() < defxLength){
-            for (int i = 1; i < defxLength; i++) {
-                Point p = getPos(new Point(i%defxLength, 0));
-                g2d.drawLine(p.x, originPoint.y - 5, p.x, originPoint.y + 5);
-                //g2d.drawString(Integer.toString(i), p.x - 3, originPoint.y + 17);
-            }
-        }
-        else{
-            for (int i = 1; i < pointsPos.size(); i++) {
-                Point p = pointsPos.get(i);
-                g2d.drawLine(p.x, originPoint.y - 5, p.x, originPoint.y + 5);
-                //g2d.drawString(Integer.toString(i), p.x - 3, originPoint.y + 17);
-            }
+        int tempX = Math.max(highestX, defxLength);
+
+        for (int i = 1; i < tempX; i++) {
+            Point p = getPos(new Point(i % tempX, 0));
+            g2d.drawLine(p.x, originPoint.y - 5, p.x, originPoint.y + 5);
+            // g2d.drawString(Integer.toString(i), p.x - 3, originPoint.y + 17);
         }
 
-        for (int i = 1; i < defyLength; i++) {
-            Point p = getPos(new Point(0, i % defxLength));
+        int tempY = Math.max(highestY, defyLength);
+
+        for (int i = 1; i < tempY; i++) {
+            Point p = getPos(new Point(0, i % tempY));
             g2d.drawLine(originPoint.x - 5, p.y, originPoint.x + 5, p.y);
             g2d.drawString(Integer.toString(i), originPoint.x - 12, p.y + 5);
         }

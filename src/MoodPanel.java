@@ -46,6 +46,6 @@ public class MoodPanel extends JPanel {
 
     public void addRecord(int value){
         records.add(new MoodRecord(value, 1));
-        chartMaker.addPoint(new Point(records.size() -1, value + 2));
+        chartMaker.addPoint(new Point(records.size() -1, value));
     }
 }
